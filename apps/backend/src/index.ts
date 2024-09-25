@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import passport, { session } from "passport";
+import { db } from "@repo/db";
 
 dotenv.config();
 const PORT = process.env.PORT || 8000;
