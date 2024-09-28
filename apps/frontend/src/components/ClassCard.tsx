@@ -7,16 +7,18 @@ import {
   CardTitle,
 } from "@repo/ui/card";
 
-export default function ClassCard() {
+export default function ClassCard({
+  classData,
+}: {
+  classData: { name: string; description: string };
+}) {
   return (
     <Card className="">
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <span>Adding Database</span>
+          <span>{classData.name}</span>
         </CardTitle>
-        <CardDescription>
-          Enhance your application with powerful database integration
-        </CardDescription>
+        <CardDescription>{classData.description}</CardDescription>
       </CardHeader>
       <CardFooter>
         <Button className="w-full">Join Now</Button>

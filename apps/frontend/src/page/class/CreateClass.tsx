@@ -13,6 +13,8 @@ import {
 } from "@repo/ui/form";
 import { Input } from "@repo/ui/input";
 import { Textarea } from "@repo/ui/textarea";
+import axios from "axios";
+import { BACKEND_URL } from "../../config/constants";
 
 const formSchema = z.object({
   name: z
@@ -31,8 +33,15 @@ const CreateClass = () => {
     resolver: zodResolver(formSchema),
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/v1/class`, values, {
+        withCredentials: true,
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (

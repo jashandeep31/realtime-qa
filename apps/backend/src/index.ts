@@ -7,9 +7,9 @@ import cors from "cors";
 import "./configs/passport.config.js";
 import { Redis } from "ioredis";
 import RedisStore from "connect-redis";
-
 // routes import
 import authRoutes from "./routes/auth.routes.js";
+import classRoutes from "./routes/class.routes.js";
 dotenv.config();
 
 const client = new Redis({
@@ -51,6 +51,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/class", classRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

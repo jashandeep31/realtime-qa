@@ -25,18 +25,37 @@ passport.use(
       callbackURL: "http://localhost:8000/api/v1/auth/google/callback",
     },
     async function (accessToken, refreshToken, profile, cb) {
-      const parsedData = userSchema.safeParse({
-        name: profile.displayName,
-        email: profile.emails?.[0]?.value ?? "",
-        avatar: profile.photos?.[0]?.value ?? "",
-      });
+      try {
+        const parsedData = userSchema.safeParse({
+          name: profile.displayName,
+          email: profile.emails?.[0]?.value ?? "",
+          avatar: profile.photos?.[0]?.value ?? "",
+        });
 
-      if (parsedData.error) {
-        return cb(parsedData.error);
+        if (parsedData.error) {
+          return cb(parsedData.error);
+        }
+        const finalData = parsedData.data;
+
+        const user = await db.user.upsert({
+          where: {
+            email: finalData.email,
+          },
+          update: {},
+          create: {
+            email: finalData.email,
+            name: finalData.name,
+            avatar: finalData.avatar,
+          },
+        });
+
+        return cb(null, {
+          ...finalData,
+          id: user.id,
+        });
+      } catch (e) {
+        return cb(e);
       }
-      const finalData = parsedData.data;
-
-      return cb(null, finalData);
     }
   )
 );

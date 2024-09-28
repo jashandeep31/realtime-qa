@@ -40,12 +40,10 @@ const Navbar = () => {
           {!session.loading && session.authenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger className="border-0 outline-none">
-                <div>
-                  <img
-                    className="rounded-full w-8"
-                    src={session.user.avatar}
-                    alt=""
-                  />
+                <div className="border p-1 rounded-full  bg-muted hover:bg-muted-foreground/30 duration-300">
+                  <span className="aspect-square min-w-6 min-h-6 inline-block">
+                    {session.user.name[0]}
+                  </span>
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
