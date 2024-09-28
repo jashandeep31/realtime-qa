@@ -5,11 +5,14 @@ import Navbar from "./components/Navbar";
 import Home from "./page/Home";
 import ClassPage from "./page/class/ClassPage";
 import CreateQuestion from "./page/class/CreateQuestion";
+import { useSession } from "./hooks/UseSession";
 
+// root component for the landing page to check if the user is authenticated or not and render the appropriate component
 const LandingPageRoot = () => {
-  const isLogin = true;
-  if (!isLogin) return <LandingPage />;
-  return <Home />;
+  const { session } = useSession();
+  if (session.loading) return <div>Loading...</div>;
+  if (!session.loading && !session.authenticated) return <LandingPage />;
+  if (!session.loading && session.authenticated) return <Home />;
 };
 
 const router = createBrowserRouter([
