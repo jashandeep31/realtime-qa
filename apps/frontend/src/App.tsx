@@ -6,6 +6,7 @@ import Home from "./page/Home";
 import ClassPage from "./page/class/ClassPage";
 import CreateQuestion from "./page/class/CreateQuestion";
 import { useSession } from "./hooks/UseSession";
+import CreateClass from "./page/class/CreateClass";
 
 // root component for the landing page to check if the user is authenticated or not and render the appropriate component
 const LandingPageRoot = () => {
@@ -15,10 +16,15 @@ const LandingPageRoot = () => {
   if (!session.loading && session.authenticated) return <Home />;
 };
 
+// TODO: protect out routes
 const router = createBrowserRouter([
   {
     path: "/",
     element: <LandingPageRoot />,
+  },
+  {
+    path: "/create",
+    element: <CreateClass />,
   },
   {
     path: "/class/:slug",

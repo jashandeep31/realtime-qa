@@ -25,7 +25,7 @@ routes.get(
 routes.route("/session").get((req, res) => {
   const user = req.user;
   if (user) {
-    return res.status(200).json(user);
+    return res.status(200).json({ user });
   } else {
     return res.status(401).json({ message: "Unauthorized" });
   }
