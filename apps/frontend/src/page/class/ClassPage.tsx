@@ -5,25 +5,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import QuestionCard from "../../components/QuestionCard";
 import { useSocket } from "../../hooks/useSocket";
 import { useEffect } from "react";
+import { Question } from "../../contexts/SocketContext";
 
 const ClassPage = () => {
-  const { socketHandler } = useSocket();
+  const { socketHandler, questions, resetClass } = useSocket();
   const { slug } = useParams<{ slug: string }>();
 
   useEffect(() => {
     if (!slug) return;
     if (!socketHandler) return;
-    socketHandler.getNewClass(slug);
+    if (socketHandler && socketHandler.classID !== slug) {
+      resetClass(slug);
+    }
 
     return () => {};
-  }, [socketHandler, slug]);
+  }, [socketHandler, slug, resetClass]);
 
   return (
     <div className="container md:mt-12 mt-6">
       <div className="flex justify-between items-center">
         <h1 className="text-lg md:text-2xl font-bold">Class Name</h1>
         <Link
-          to="/class/temp/create"
+          to={`/class/${slug}/create`}
           className={cn(buttonVariants({ variant: "outline" }))}
         >
           Create +
@@ -37,7 +40,7 @@ const ClassPage = () => {
             <TabsTrigger value="password1">Resources</TabsTrigger>
           </TabsList>
           <TabsContent value="account">
-            <Quesitons />
+            <Quesitons questions={questions} />
           </TabsContent>
           <TabsContent value="password"></TabsContent>
           <TabsContent value="password1"></TabsContent>
@@ -47,12 +50,12 @@ const ClassPage = () => {
   );
 };
 
-function Quesitons() {
+function Quesitons({ questions }: { questions: Question[] }) {
   return (
     <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
-      <QuestionCard />
-      <QuestionCard />
-      <QuestionCard />
+      {questions.map((question, index) => (
+        <QuestionCard question={question} key={index} />
+      ))}
     </div>
   );
 }

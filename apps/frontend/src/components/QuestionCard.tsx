@@ -6,27 +6,78 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui/card";
-import { ArrowDown, ArrowUp, MessageCircle } from "lucide-react";
+import { ArrowDown, ArrowUp, MessageCircle, TrashIcon } from "lucide-react";
+import { Question } from "../contexts/SocketContext";
+import { useSocket } from "../hooks/useSocket";
+import { useSession } from "../hooks/UseSession";
 
-export default function QuestionCard() {
+export default function QuestionCard({ question }: { question: Question }) {
+  const { socket } = useSocket();
+  const { session } = useSession();
+  const userID =
+    !session.loading && session.authenticated && session.user.id
+      ? session.user.id
+      : null;
   return (
     <Card className="">
       <CardHeader>
         <CardTitle className="text-xl font-bold">
-          What is the capital of France?
+          <div className="flex items-center justify-between">
+            <span>{question.title}</span>
+
+            {!session.loading &&
+            session.authenticated &&
+            session.user.id === question.userID ? (
+              <button
+                className="text-red-500 hover:text-red-700  "
+                onClick={() => {
+                  socket?.emit("deleteQuestion", {
+                    id: question.id,
+                    classID: question.classID,
+                  });
+                }}
+              >
+                <TrashIcon size={15} />
+              </button>
+            ) : null}
+          </div>
         </CardTitle>
         <CardDescription className="text-sm text-muted-foreground mt-2">
-          This is a sample question that users can upvote, downvote, and answer.
+          {question.description}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+            <Button
+              disabled={userID ? question.upvoted.includes(userID) : false}
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 p-0"
+              onClick={() => {
+                socket?.emit("voteQuestion", {
+                  id: question.id,
+                  type: "upvote",
+                  classID: question.classID,
+                });
+              }}
+            >
               <ArrowUp className="h-5 w-5" />
             </Button>
-            <span className="font-bold">23</span>
-            <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+            <span className="font-bold">{question.votes}</span>
+            <Button
+              disabled={userID ? question.downvoted.includes(userID) : false}
+              onClick={() => {
+                socket?.emit("voteQuestion", {
+                  id: question.id,
+                  type: "downvote",
+                  classID: question.classID,
+                });
+              }}
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 p-0"
+            >
               <ArrowDown className="h-5 w-5" />
             </Button>
           </div>

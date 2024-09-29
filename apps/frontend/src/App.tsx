@@ -43,7 +43,7 @@ const App = () => {
       <SocketProvider>
         <div className="flex flex-col min-h-screen">
           <Navbar />
-          <Toaster />
+          <Toaster richColors />
           <main className="flex-1">
             <RouterProvider router={router} />
           </main>

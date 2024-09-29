@@ -13,19 +13,43 @@ import {
 } from "@repo/ui/form";
 import { Input } from "@repo/ui/input";
 import QuestionCard from "../../components/QuestionCard";
+import { useSocket } from "../../hooks/useSocket";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const formSchema = z.object({
-  username: z.string().min(2).max(50),
+  title: z.string().min(2).max(50),
 });
 
 const CreateQuestion = () => {
+  const navigate = useNavigate();
+  const { socketHandler, questions, resetClass } = useSocket();
+  const { slug } = useParams<{ slug: string }>();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "this ",
+    },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    if (!socketHandler) return;
+    socketHandler.createQuestion({
+      title: values.title,
+      description: "this is a description ",
+    });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    navigate(`/class/${slug}`);
   }
+
+  useEffect(() => {
+    if (!socketHandler) return;
+    if (socketHandler.classID !== slug && slug) {
+      resetClass(slug);
+    }
+  }, [socketHandler, slug, resetClass]);
 
   return (
     <div className="container md:mt-12 mt-6">
@@ -41,7 +65,7 @@ const CreateQuestion = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
-                name="username"
+                name="title"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Title</FormLabel>
@@ -58,7 +82,9 @@ const CreateQuestion = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <Button disabled={form.formState.isSubmitting} type="submit">
+                {form.formState.isSubmitting ? "Submitting" : "Submit"}
+              </Button>
             </form>
           </Form>
         </div>
@@ -66,7 +92,9 @@ const CreateQuestion = () => {
           <h3 className="text-muted-foreground font-medium text-sm mb-3">
             Similar Questions
           </h3>
-          <QuestionCard />
+          {questions.map((question) => (
+            <QuestionCard question={question} />
+          ))}
         </div>
       </section>
     </div>
