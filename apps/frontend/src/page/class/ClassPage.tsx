@@ -1,10 +1,23 @@
 import { buttonVariants } from "@repo/ui/button";
 import { cn } from "@repo/ui/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import QuestionCard from "../../components/QuestionCard";
+import { useSocket } from "../../hooks/useSocket";
+import { useEffect } from "react";
 
 const ClassPage = () => {
+  const { socketHandler } = useSocket();
+  const { slug } = useParams<{ slug: string }>();
+
+  useEffect(() => {
+    if (!slug) return;
+    if (!socketHandler) return;
+    socketHandler.getNewClass(slug);
+
+    return () => {};
+  }, [socketHandler, slug]);
+
   return (
     <div className="container md:mt-12 mt-6">
       <div className="flex justify-between items-center">

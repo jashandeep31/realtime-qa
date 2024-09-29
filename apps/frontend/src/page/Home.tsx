@@ -10,7 +10,7 @@ import { BACKEND_URL } from "../config/constants";
 
 const Home = () => {
   const [classes, setClasses] = useState<
-    { name: string; description: string }[]
+    { name: string; description: string; id: string }[]
   >([]);
   const getClasses = async () => {
     try {

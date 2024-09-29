@@ -8,13 +8,3 @@ export const catchAsync = (
     fn(req, res, next).catch(next);
   };
 };
-declare global {
-  namespace Express {
-    interface User extends UserSession {}
-
-    interface Request {
-      jashan: string;
-      user?: Express.User;
-    }
-  }
-}

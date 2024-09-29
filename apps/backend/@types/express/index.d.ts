@@ -1,8 +1,16 @@
+import { Socket as SocketIO } from "socket.io";
+
 declare global {
   namespace Express {
     interface Request {
-      jashan: string;
       user: { id: string };
     }
+  }
+}
+
+declare module "socket.io" {
+  interface Socket extends SocketIO {
+    user: null;
+    userId: string;
   }
 }
