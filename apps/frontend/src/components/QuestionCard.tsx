@@ -46,7 +46,7 @@ export default function QuestionCard({ question }: { question: Question }) {
         </CardTitle>
 
         <CardDescription className="text-sm text-muted-foreground mt-2">
-          {question.description}
+          {question.description.replace(/<[^>]*>/g, "").substring(0, 20)}...
         </CardDescription>
       </CardHeader>
       <CardContent>

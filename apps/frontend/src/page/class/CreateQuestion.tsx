@@ -14,8 +14,11 @@ import {
 import { Input } from "@repo/ui/input";
 import QuestionCard from "../../components/QuestionCard";
 import { useSocket } from "../../hooks/useSocket";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { Label } from "@repo/ui/label";
 
 const formSchema = z.object({
   title: z.string().min(2).max(50),
@@ -25,12 +28,10 @@ const CreateQuestion = () => {
   const navigate = useNavigate();
   const { socketHandler, questions, resetClass } = useSocket();
   const { slug } = useParams<{ slug: string }>();
+  const [description, setDescription] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "this ",
-    },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -38,7 +39,7 @@ const CreateQuestion = () => {
     if (!socketHandler) return;
     socketHandler.createQuestion({
       title: values.title,
-      description: "this is a description ",
+      description,
     });
     await new Promise((resolve) => setTimeout(resolve, 1000));
     navigate(`/class/${slug}`);
@@ -82,6 +83,14 @@ const CreateQuestion = () => {
                   </FormItem>
                 )}
               />
+              <div className="relative">
+                <Label className="mb-2 block">Description/Detail</Label>
+                <ReactQuill
+                  theme="snow"
+                  value={description}
+                  onChange={setDescription}
+                />
+              </div>
               <Button disabled={form.formState.isSubmitting} type="submit">
                 {form.formState.isSubmitting ? "Submitting" : "Submit"}
               </Button>
