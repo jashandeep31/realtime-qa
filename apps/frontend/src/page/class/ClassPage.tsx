@@ -6,6 +6,7 @@ import QuestionCard from "../../components/QuestionCard";
 import { useSocket } from "../../hooks/useSocket";
 import { useEffect } from "react";
 import { Question } from "../../contexts/SocketContext";
+import QuestionDialog from "../../components/QuestionDialog";
 
 const ClassPage = () => {
   const { socketHandler, questions, resetClass } = useSocket();
@@ -32,6 +33,7 @@ const ClassPage = () => {
           Create +
         </Link>
       </div>
+      <QuestionDialog />
       <section className="mt-3">
         <Tabs defaultValue="account">
           <TabsList>

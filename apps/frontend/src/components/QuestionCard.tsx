@@ -10,6 +10,7 @@ import { ArrowDown, ArrowUp, MessageCircle, TrashIcon } from "lucide-react";
 import { Question } from "../contexts/SocketContext";
 import { useSocket } from "../hooks/useSocket";
 import { useSession } from "../hooks/UseSession";
+import { Link } from "react-router-dom";
 
 export default function QuestionCard({ question }: { question: Question }) {
   const { socket } = useSocket();
@@ -21,10 +22,11 @@ export default function QuestionCard({ question }: { question: Question }) {
   return (
     <Card className="">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">
+        <CardTitle className="text-xl font-bold ">
           <div className="flex items-center justify-between">
-            <span>{question.title}</span>
-
+            <Link to={`/class/${question.classID}/${question.id}`}>
+              <span className="underline">{question.title}</span>
+            </Link>
             {!session.loading &&
             session.authenticated &&
             session.user.id === question.userID ? (
@@ -42,6 +44,7 @@ export default function QuestionCard({ question }: { question: Question }) {
             ) : null}
           </div>
         </CardTitle>
+
         <CardDescription className="text-sm text-muted-foreground mt-2">
           {question.description}
         </CardDescription>

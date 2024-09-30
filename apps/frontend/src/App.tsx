@@ -9,6 +9,7 @@ import { useSession } from "./hooks/UseSession";
 import CreateClass from "./page/class/CreateClass";
 import SocketProvider from "./providers/SocketProvider";
 import { Toaster } from "sonner";
+import { QuestionPage } from "./page/class/QuestionPage";
 // root component for the landing page to check if the user is authenticated or not and render the appropriate component
 const LandingPageRoot = () => {
   const { session } = useSession();
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
   {
     path: "/class/:slug/create",
     element: <CreateQuestion />,
+  },
+  {
+    path: "/class/:slug/:id",
+    element: <QuestionPage />,
   },
 ]);
 
