@@ -10,7 +10,9 @@ declare global {
 
 declare module "socket.io" {
   interface Socket extends SocketIO {
-    user: null;
+    user: {
+      name: string;
+    };
     userId: string;
   }
 }

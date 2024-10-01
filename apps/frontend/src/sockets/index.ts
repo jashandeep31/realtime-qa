@@ -14,11 +14,36 @@ class SocketHandler {
       id: id,
     });
   }
-  createQuestion(data: { title: string; description: string }) {
+  createQuestion(data: {
+    title: string;
+    description: string;
+    isNotionLink: boolean;
+    notionLink: string | undefined;
+  }) {
     this.socket.emit("newQuestion", { ...data, classID: this.classID });
   }
   getAllQuestions() {
     this.socket.emit("getAllQuestions", { id: this.classID });
+  }
+  createAnswer({ questionID, detail }: { questionID: string; detail: string }) {
+    this.socket.emit("newAnswer", {
+      classID: this.classID,
+      questionID,
+      detail,
+    });
+  }
+  acceptAnswer({
+    questionID,
+    answerID,
+  }: {
+    questionID: string;
+    answerID: string;
+  }) {
+    this.socket.emit("acceptAnswer", {
+      classID: this.classID,
+      questionID,
+      answerID,
+    });
   }
 }
 

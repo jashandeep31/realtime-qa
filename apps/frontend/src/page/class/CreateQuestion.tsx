@@ -19,9 +19,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Label } from "@repo/ui/label";
+import { Checkbox } from "@repo/ui/checkbox";
 
 const formSchema = z.object({
   title: z.string().min(2).max(50),
+  notionLink: z.string().optional(),
 });
 
 const CreateQuestion = () => {
@@ -29,6 +31,7 @@ const CreateQuestion = () => {
   const { socketHandler, questions, resetClass } = useSocket();
   const { slug } = useParams<{ slug: string }>();
   const [description, setDescription] = useState("");
+  const [isNotionLink, setIsNotionLink] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,6 +43,8 @@ const CreateQuestion = () => {
     socketHandler.createQuestion({
       title: values.title,
       description,
+      isNotionLink: isNotionLink,
+      notionLink: values.notionLink,
     });
     await new Promise((resolve) => setTimeout(resolve, 1000));
     navigate(`/class/${slug}`);
@@ -83,7 +88,47 @@ const CreateQuestion = () => {
                   </FormItem>
                 )}
               />
-              <div className="relative">
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                <FormControl>
+                  <Checkbox
+                    checked={isNotionLink}
+                    onCheckedChange={(e: boolean) => setIsNotionLink(e)}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>
+                    I am using notion for my question showcase
+                  </FormLabel>
+                  <FormDescription>
+                    If you are using notion for your question showcase, please
+                    check this box.
+                  </FormDescription>
+                </div>
+              </FormItem>
+
+              {isNotionLink ? (
+                <FormField
+                  control={form.control}
+                  name="notionLink"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notion Page Link</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Mongoose not getting installed"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Add the notion page link here. Make sure the page is
+                        public page.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : null}
+              <div className={`relative ${isNotionLink ? "hidden" : ""}`}>
                 <Label className="mb-2 block">Description/Detail</Label>
                 <ReactQuill
                   theme="snow"

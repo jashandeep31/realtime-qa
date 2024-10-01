@@ -20,7 +20,7 @@ export default function QuestionCard({ question }: { question: Question }) {
       ? session.user.id
       : null;
   return (
-    <Card className="">
+    <Card className="flex flex-col justify-between">
       <CardHeader>
         <CardTitle className="text-xl font-bold ">
           <div className="flex items-center justify-between">
@@ -46,7 +46,10 @@ export default function QuestionCard({ question }: { question: Question }) {
         </CardTitle>
 
         <CardDescription className="text-sm text-muted-foreground mt-2">
-          {question.description.replace(/<[^>]*>/g, "").substring(0, 20)}...
+          {question.isNotionLink
+            ? "Notion Link"
+            : question.description.replace(/<[^>]*>/g, "").substring(0, 20) +
+              "..."}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -87,7 +90,7 @@ export default function QuestionCard({ question }: { question: Question }) {
           <div className="flex items-center space-x-2">
             <span className="text-sm text-muted-foreground">
               <MessageCircle className="inline mr-1 h-4 w-4" />
-              12 Answers
+              {question.answers.length} Answers
             </span>
           </div>
         </div>

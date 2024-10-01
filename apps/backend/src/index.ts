@@ -8,6 +8,17 @@ import { Redis } from "ioredis";
 import RedisStore from "connect-redis";
 import { createServer } from "node:http";
 import * as z from "zod";
+import { NotionAPI } from "notion-client";
+// temp declaration of the module
+const notion = new NotionAPI();
+
+declare module "notion-client" {
+  // export NotionAPI as any
+  export class NotionAPI {
+    constructor();
+    getPage: (pageId: string) => Promise<any>;
+  }
+}
 
 // routes import
 import authRoutes from "./routes/auth.routes.js";
@@ -15,6 +26,7 @@ import classRoutes from "./routes/class.routes.js";
 import { Server, Socket } from "socket.io";
 import { initSocket } from "./sockets/index.js";
 import { ApplicationError } from "./lib/appError.js";
+import { redisClient } from "./configs/redis.config.js";
 
 dotenv.config();
 
@@ -60,7 +72,9 @@ io.use((socket: Socket, next) => {
     if (userError) {
       return next(new ApplicationError("Unauthorized", 400));
     } else {
-      socket.user = null;
+      socket.user = {
+        name: user.name,
+      };
       socket.userId = user.id;
       next();
     }
@@ -96,6 +110,27 @@ interface SessionSocket extends Socket {
 
 app.get("/", (req, res) => {
   res.send(`Hello World!, ${RANDOM_NUMBER}`);
+});
+app.get("/test/:id", async (req, res) => {
+  const notionPageId = req.params.id;
+  const cacheKey = `notion:${notionPageId}`;
+
+  try {
+    // Check if data is in Redis cache
+    const cachedData = await redisClient.get(cacheKey);
+
+    if (cachedData) {
+      // If cached data exists, return it
+      return res.status(200).json(JSON.parse(cachedData));
+    }
+    const recordMap = await notion.getPage(notionPageId);
+    await redisClient.setex(cacheKey, 1800, JSON.stringify(recordMap));
+
+    res.status(200).json(recordMap);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
 });
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/class", classRoutes);

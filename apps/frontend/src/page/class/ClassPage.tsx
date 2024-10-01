@@ -38,8 +38,12 @@ const ClassPage = () => {
         <Tabs defaultValue="account">
           <TabsList>
             <TabsTrigger value="account">Questions</TabsTrigger>
-            <TabsTrigger value="password">Project/PR showcases</TabsTrigger>
-            <TabsTrigger value="password1">Resources</TabsTrigger>
+            <TabsTrigger disabled value="password">
+              Project/PR showcases (soon)
+            </TabsTrigger>
+            <TabsTrigger disabled value="password1">
+              Resources (soon)
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="account">
             <Quesitons questions={questions} />
