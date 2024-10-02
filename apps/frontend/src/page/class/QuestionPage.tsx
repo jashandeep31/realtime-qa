@@ -5,19 +5,18 @@ import { Question } from "../../contexts/SocketContext";
 import { ArrowLeft, Check } from "lucide-react";
 import QuestionCard from "../../components/QuestionCard";
 import { NotionRenderer } from "react-notion-x";
-// core styles shared by all of react-notion-x (required)
-import "react-notion-x/src/styles.css";
 import { toast } from "sonner";
 import ReactQuill from "react-quill";
 import { Button } from "@repo/ui/button";
-import { useSession } from "../../hooks/UseSession";
+import AnswerCard from "../../components/AnswerCard";
+
+import "react-notion-x/src/styles.css";
 
 export const QuestionPage = () => {
   const { questions, socketHandler, resetClass } = useSocket();
   const { id, slug } = useParams<{ id: string; slug: string }>();
   const [question, setQuestion] = useState<Question | null>(null);
   const [answer, setAnswer] = useState("");
-  const { session } = useSession();
   useEffect(() => {
     if (!id || !questions) return;
     const question = questions.find((q) => q.id === id);
@@ -80,15 +79,12 @@ export const QuestionPage = () => {
               </span>
             )}
           </h1>
+
           {notionPage && question.isNotionLink && (
             <NotionRenderer recordMap={notionPage} fullPage={false} />
           )}
-          {!question.isNotionLink && (
-            <div className="mt-6">
-              <div dangerouslySetInnerHTML={{ __html: question.description }} />
-            </div>
-          )}
-
+          {/* render the description of the question if not the notion page */}
+          <Description question={question} />
           <div className="mt-6 md:mt-12">
             <h2 className="text-lg font-bold">Answer</h2>
             <div className={`relative `}>
@@ -109,44 +105,7 @@ export const QuestionPage = () => {
           </div>
           <div className="mt-12 space-y-6">
             {question.answers.map((answer) => (
-              <div key={answer.id}>
-                <div className="border p-2 rounded text-sm">
-                  <h5 className="font-bold flex items-center gap-1 flex-wrap">
-                    <span>{answer.userName}</span>
-                    {question.answered && answer.accepted && (
-                      <span>
-                        <Check
-                          size={16}
-                          className="bg-green-500 rounded-full  text-white font-bold"
-                        />
-                      </span>
-                    )}
-                  </h5>
-                  <div
-                    className="p-1"
-                    dangerouslySetInnerHTML={{ __html: answer.detail }}
-                  />
-                  <div className="flex justify-end gap-2">
-                    {!session.loading &&
-                      session.authenticated &&
-                      session.user.id === question.userID &&
-                      !question.answered && (
-                        <Button
-                          size={"sm"}
-                          variant={"ghost"}
-                          onClick={() => {
-                            socketHandler?.acceptAnswer({
-                              questionID: question.id,
-                              answerID: answer.id,
-                            });
-                          }}
-                        >
-                          Accept Answer
-                        </Button>
-                      )}
-                  </div>
-                </div>
-              </div>
+              <AnswerCard answer={answer} question={question} key={answer.id} />
             ))}
           </div>
         </div>
@@ -157,5 +116,17 @@ export const QuestionPage = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const Description = ({ question }: { question: Question }) => {
+  return (
+    <>
+      {!question.isNotionLink && (
+        <div className="mt-6">
+          <div dangerouslySetInnerHTML={{ __html: question.description }} />
+        </div>
+      )}
+    </>
   );
 };

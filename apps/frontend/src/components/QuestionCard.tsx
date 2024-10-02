@@ -6,7 +6,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui/card";
-import { ArrowDown, ArrowUp, MessageCircle, TrashIcon } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Check,
+  MessageCircle,
+  TrashIcon,
+} from "lucide-react";
 import { Question } from "../contexts/SocketContext";
 import { useSocket } from "../hooks/useSocket";
 import { useSession } from "../hooks/UseSession";
@@ -25,7 +31,15 @@ export default function QuestionCard({ question }: { question: Question }) {
         <CardTitle className="text-xl font-bold ">
           <div className="flex items-center justify-between">
             <Link to={`/class/${question.classID}/${question.id}`}>
-              <span className="underline">{question.title}</span>
+              <span className="flex items-center gap-1">
+                <span className="underline">{question.title}</span>
+                {question.answered && (
+                  <Check
+                    size={16}
+                    className="bg-green-500 rounded-full  text-white font-bold"
+                  />
+                )}
+              </span>
             </Link>
             {!session.loading &&
             session.authenticated &&

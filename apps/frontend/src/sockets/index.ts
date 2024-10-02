@@ -20,6 +20,7 @@ class SocketHandler {
     isNotionLink: boolean;
     notionLink: string | undefined;
   }) {
+    console.log(this.classID, { ...data });
     this.socket.emit("newQuestion", { ...data, classID: this.classID });
   }
   getAllQuestions() {

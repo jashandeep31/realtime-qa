@@ -10,6 +10,7 @@ import CreateClass from "./page/class/CreateClass";
 import SocketProvider from "./providers/SocketProvider";
 import { Toaster } from "sonner";
 import { QuestionPage } from "./page/class/QuestionPage";
+import { ThemeProvider } from "./providers/ThemeProvider";
 // root component for the landing page to check if the user is authenticated or not and render the appropriate component
 const LandingPageRoot = () => {
   const { session } = useSession();
@@ -45,16 +46,18 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <div>
-      <SocketProvider>
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <Toaster richColors />
-          <main className="flex-1">
-            <RouterProvider router={router} />
-          </main>
-          <Footer />
-        </div>
-      </SocketProvider>
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+        <SocketProvider>
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <Toaster richColors />
+            <main className="flex-1">
+              <RouterProvider router={router} />
+            </main>
+            <Footer />
+          </div>
+        </SocketProvider>
+      </ThemeProvider>
     </div>
   );
 };

@@ -35,8 +35,9 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       toast.info("You have joined the class");
     });
 
-    newSocket.on("allQuestions", (data) => {
-      setQuestions(data);
+    newSocket.on("allQuestions", (data: Question[]) => {
+      const sorted = data.sort((a, b) => b.votes - a.votes);
+      setQuestions([...sorted]);
     });
 
     newSocket.on("questionCreated", (data) => {
@@ -71,9 +72,20 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [classID, socketHandler]);
 
+  const arrangeByVotes = () => {
+    const sorted = questions.sort((a, b) => b.votes - a.votes);
+    setQuestions([...sorted]);
+  };
   return (
     <SocketContext.Provider
-      value={{ socket, socketHandler, questions, resetClass }}
+      value={{
+        socket,
+        socketHandler,
+        questions,
+        resetClass,
+        arrangeByVotes,
+        classID,
+      }}
     >
       {children}
     </SocketContext.Provider>

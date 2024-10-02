@@ -54,6 +54,8 @@ interface ISocketContext {
   socketHandler: SocketHandler | null;
   questions: Question[];
   resetClass: (slug: string) => void;
+  arrangeByVotes: () => void;
+  classID: string | null;
 }
 
 export const SocketContext = createContext<ISocketContext>({
@@ -63,4 +65,6 @@ export const SocketContext = createContext<ISocketContext>({
   resetClass: (slug: string) => {
     return slug;
   },
+  arrangeByVotes: () => {},
+  classID: null,
 });

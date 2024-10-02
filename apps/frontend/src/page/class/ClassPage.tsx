@@ -1,4 +1,4 @@
-import { buttonVariants } from "@repo/ui/button";
+import { Button, buttonVariants } from "@repo/ui/button";
 import { cn } from "@repo/ui/lib/utils";
 import { Link, useParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
@@ -9,9 +9,9 @@ import { Question } from "../../contexts/SocketContext";
 import QuestionDialog from "../../components/QuestionDialog";
 
 const ClassPage = () => {
-  const { socketHandler, questions, resetClass } = useSocket();
+  const { socketHandler, questions, resetClass, arrangeByVotes } = useSocket();
   const { slug } = useParams<{ slug: string }>();
-
+  console.log(questions);
   useEffect(() => {
     if (!slug) return;
     if (!socketHandler) return;
@@ -26,12 +26,20 @@ const ClassPage = () => {
     <div className="container md:mt-12 mt-6">
       <div className="flex justify-between items-center">
         <h1 className="text-lg md:text-2xl font-bold">Class Name</h1>
-        <Link
-          to={`/class/${slug}/create`}
-          className={cn(buttonVariants({ variant: "outline" }))}
-        >
-          Create +
-        </Link>
+        <div className="flex gap-1">
+          <Button variant="secondary" onClick={arrangeByVotes}>
+            Admin View (soon)
+          </Button>
+          <Button variant="secondary" onClick={arrangeByVotes}>
+            Arrange by votes
+          </Button>
+          <Link
+            to={`/class/${slug}/create`}
+            className={cn(buttonVariants({ variant: "outline" }))}
+          >
+            Create +
+          </Link>
+        </div>
       </div>
       <QuestionDialog />
       <section className="mt-3">
