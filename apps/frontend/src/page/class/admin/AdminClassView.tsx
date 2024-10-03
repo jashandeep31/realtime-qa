@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import AnswerCard from "../../../components/AnswerCard";
 import { NotionRenderer } from "react-notion-x";
 import { toast } from "sonner";
+import MDXRenderer from "../../../components/MDXRenderer";
 
 const AdminClassView = () => {
   const { classSlug } = useParams<{ classSlug: string }>();
@@ -51,8 +52,11 @@ const AdminClassView = () => {
             <Button variant={"outline"}>Answer</Button>
           </div> */}
         <div className="mt-6">
-          <NotionRendererComponent question={question} />
-          <Description question={question} />
+          {question.isNotionLink ? (
+            <NotionRendererComponent question={question} />
+          ) : (
+            <MDXRenderer code={question.description} />
+          )}
         </div>
         <div className="mt-6">
           <h1 className="text-lg font-bold">Answers</h1>
@@ -138,17 +142,6 @@ const AdminClassView = () => {
 };
 
 export default AdminClassView;
-const Description = ({ question }: { question: Question }) => {
-  return (
-    <>
-      {!question.isNotionLink && (
-        <div className="mt-6">
-          <div dangerouslySetInnerHTML={{ __html: question.description }} />
-        </div>
-      )}
-    </>
-  );
-};
 
 const NotionRendererComponent = ({ question }: { question: Question }) => {
   const [notionPage, setNotionPage] = useState(null);
