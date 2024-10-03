@@ -16,10 +16,11 @@ import QuestionCard from "../../components/QuestionCard";
 import { useSocket } from "../../hooks/useSocket";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ReactQuill from "react-quill";
+// import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Label } from "@repo/ui/label";
 import { Checkbox } from "@repo/ui/checkbox";
+import CKEditorComponent from "../../components/CKEditor";
 
 const formSchema = z.object({
   title: z.string().min(2).max(50),
@@ -88,6 +89,7 @@ const CreateQuestion = () => {
                   </FormItem>
                 )}
               />
+
               <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
                 <FormControl>
                   <Checkbox
@@ -128,14 +130,21 @@ const CreateQuestion = () => {
                   )}
                 />
               ) : null}
-              <div className={`relative ${isNotionLink ? "hidden" : ""}`}>
+              {/* <div className={`relative ${isNotionLink ? "hidden" : ""}`}>
                 <Label className="mb-2 block">Description/Detail</Label>
                 <ReactQuill
                   theme="snow"
                   value={description}
                   onChange={setDescription}
                 />
-              </div>
+              </div> */}
+              {
+                <div className={`relative ${isNotionLink ? "hidden" : ""}`}>
+                  <Label className="mb-2 block">Description/Detail</Label>
+
+                  <CKEditorComponent setValue={setDescription} />
+                </div>
+              }
               <Button disabled={form.formState.isSubmitting} type="submit">
                 {form.formState.isSubmitting ? "Submitting" : "Submit"}
               </Button>

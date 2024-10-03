@@ -11,6 +11,7 @@ import SocketProvider from "./providers/SocketProvider";
 import { Toaster } from "sonner";
 import { QuestionPage } from "./page/class/QuestionPage";
 import { ThemeProvider } from "./providers/ThemeProvider";
+import AdminClassView from "./page/class/admin/AdminClassView";
 // root component for the landing page to check if the user is authenticated or not and render the appropriate component
 const LandingPageRoot = () => {
   const { session } = useSession();
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
   {
     path: "/class/:slug",
     element: <ClassPage />,
+  },
+  {
+    path: "/class/:classSlug/admin",
+    element: <AdminClassView />,
   },
   {
     path: "/class/:slug/create",

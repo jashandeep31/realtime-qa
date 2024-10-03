@@ -1,21 +1,21 @@
 import { io, Socket } from "socket.io-client";
 import { SOCKET_IO_URL } from "../config/constants";
-import { Question, SocketContext } from "../contexts/SocketContext";
+import { IClass, Question, SocketContext } from "../contexts/SocketContext";
 import SocketHandler from "../sockets";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const [classID, setClassID] = useState<string>("");
+  const [classData, setclassData] = useState<null | IClass>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [socketHandler, setSocketHandler] = useState<SocketHandler | null>(
     null
   );
 
   const resetClass = (slug: string) => {
-    setClassID(slug);
     if (socketHandler) {
       socketHandler.getNewClass(slug);
+      socketHandler.getAllQuestions();
     }
   };
 
@@ -31,7 +31,8 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       setSocketHandler(new SocketHandler(newSocket));
     });
 
-    newSocket.on("joined", () => {
+    newSocket.on("joined", (data) => {
+      setclassData(data.class);
       toast.info("You have joined the class");
     });
 
@@ -70,7 +71,7 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     if (socketHandler) {
       socketHandler.getAllQuestions();
     }
-  }, [classID, socketHandler]);
+  }, [socketHandler]);
 
   const arrangeByVotes = () => {
     const sorted = questions.sort((a, b) => b.votes - a.votes);
@@ -84,7 +85,7 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         questions,
         resetClass,
         arrangeByVotes,
-        classID,
+        classData,
       }}
     >
       {children}

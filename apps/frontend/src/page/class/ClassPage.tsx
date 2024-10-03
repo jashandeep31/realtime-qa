@@ -7,29 +7,43 @@ import { useSocket } from "../../hooks/useSocket";
 import { useEffect } from "react";
 import { Question } from "../../contexts/SocketContext";
 import QuestionDialog from "../../components/QuestionDialog";
+import { useSession } from "../../hooks/UseSession";
 
 const ClassPage = () => {
-  const { socketHandler, questions, resetClass, arrangeByVotes } = useSocket();
+  const { session } = useSession();
+  const { socketHandler, questions, resetClass, arrangeByVotes, classData } =
+    useSocket();
   const { slug } = useParams<{ slug: string }>();
-  console.log(questions);
   useEffect(() => {
     if (!slug) return;
     if (!socketHandler) return;
-    if (socketHandler && socketHandler.classID !== slug) {
+    console.log(socketHandler.intialized);
+    if (!socketHandler.intialized) {
+      console.log(slug, `we worked`);
+      resetClass(slug);
+    }
+    if (socketHandler && socketHandler.classID !== slug && slug) {
+      console.log(`this`);
       resetClass(slug);
     }
 
     return () => {};
   }, [socketHandler, slug, resetClass]);
+  if (session.loading || !session.authenticated) return;
 
   return (
     <div className="container md:mt-12 mt-6">
       <div className="flex justify-between items-center">
         <h1 className="text-lg md:text-2xl font-bold">Class Name</h1>
         <div className="flex gap-1">
-          <Button variant="secondary" onClick={arrangeByVotes}>
-            Admin View (soon)
-          </Button>
+          {classData?.userId === session.user.id && (
+            <Link
+              to={`/class/${classData.id}/admin`}
+              className={cn(buttonVariants({ variant: "outline" }))}
+            >
+              Admin View
+            </Link>
+          )}
           <Button variant="secondary" onClick={arrangeByVotes}>
             Arrange by votes
           </Button>

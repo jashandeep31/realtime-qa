@@ -3,13 +3,16 @@ import { Socket } from "socket.io-client";
 class SocketHandler {
   socket: Socket;
   classID: string;
+  intialized: boolean;
   constructor(socket: Socket) {
     this.socket = socket;
     this.classID = "";
+    this.intialized = false;
   }
 
   getNewClass(id: string) {
     this.classID = id;
+    this.intialized = true;
     this.socket.emit("classID", {
       id: id,
     });

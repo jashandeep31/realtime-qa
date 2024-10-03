@@ -23,7 +23,6 @@ export const QuestionPage = () => {
     if (!question) return;
     if (question.isNotionLink) getPage(question.notionLink);
     setQuestion(question);
-    console.log(question);
   }, [id, questions]);
 
   useEffect(() => {
@@ -33,7 +32,7 @@ export const QuestionPage = () => {
     }
   }, [socketHandler, slug, resetClass]);
 
-  const [notionPage, NotionPage] = useState(null);
+  const [notionPage, setNotionPage] = useState(null);
   const getPage = async (id: string) => {
     try {
       const res = await fetch(
@@ -44,7 +43,7 @@ export const QuestionPage = () => {
       }
       const data = await res.json();
 
-      NotionPage(data);
+      setNotionPage(data);
     } catch (e: unknown) {
       if (e instanceof Error) {
         toast.error(e.message || "Notion page not found");

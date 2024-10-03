@@ -6,11 +6,11 @@ const Footer = () => {
           © 2024 RealTime Q&A. All rights reserved.
         </p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <a className="text-xs hover:underline underline-offset-4" href="#">
-            Terms of Service
-          </a>
-          <a className="text-xs hover:underline underline-offset-4" href="#">
-            Privacy
+          <a
+            className="text-xs hover:underline underline-offset-4"
+            href="https://x.com/Jashandeep31"
+          >
+            Jashandeep31
           </a>
         </nav>
       </footer>

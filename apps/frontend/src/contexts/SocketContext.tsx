@@ -49,13 +49,21 @@ export interface Answer {
   accepted: boolean;
 }
 
+export interface IClass {
+  id: string;
+  name: string;
+  description: string;
+  userId: string;
+  expired: boolean;
+}
+
 interface ISocketContext {
   socket: Socket | null;
   socketHandler: SocketHandler | null;
   questions: Question[];
   resetClass: (slug: string) => void;
   arrangeByVotes: () => void;
-  classID: string | null;
+  classData: null | IClass;
 }
 
 export const SocketContext = createContext<ISocketContext>({
@@ -65,6 +73,6 @@ export const SocketContext = createContext<ISocketContext>({
   resetClass: (slug: string) => {
     return slug;
   },
+  classData: null,
   arrangeByVotes: () => {},
-  classID: null,
 });
