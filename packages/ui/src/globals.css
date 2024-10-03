@@ -81,3 +81,14 @@
       "calt" 1;
   }
 }
+[data-rehype-pretty-code-figure] {
+  @apply grid;
+}
+
+[data-rehype-pretty-code-figure] code {
+  @apply order-last grid min-w-full  break-words   border-0 bg-transparent p-2;
+}
+
+[data-line] {
+  @apply px-2;
+}

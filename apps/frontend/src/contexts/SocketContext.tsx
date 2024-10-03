@@ -64,6 +64,8 @@ interface ISocketContext {
   resetClass: (slug: string) => void;
   arrangeByVotes: () => void;
   classData: null | IClass;
+  setSearchQuery: (query: string) => void;
+  searchQuery: string;
 }
 
 export const SocketContext = createContext<ISocketContext>({
@@ -75,4 +77,7 @@ export const SocketContext = createContext<ISocketContext>({
   },
   classData: null,
   arrangeByVotes: () => {},
+  searchQuery: "",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setSearchQuery: (query: string) => {},
 });

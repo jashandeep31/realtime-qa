@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import { Question } from "../../contexts/SocketContext";
 import QuestionDialog from "../../components/QuestionDialog";
 import { useSession } from "../../hooks/UseSession";
+import { Input } from "@repo/ui/input";
+import { Search } from "lucide-react";
 
 const ClassPage = () => {
   const { session } = useSession();
@@ -79,11 +81,25 @@ const ClassPage = () => {
 };
 
 function Quesitons({ questions }: { questions: Question[] }) {
+  const { setSearchQuery, searchQuery } = useSocket();
   return (
-    <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
-      {questions.map((question, index) => (
-        <QuestionCard question={question} key={index} />
-      ))}
+    <div>
+      <div className="mb-3 flex items-center gap-1">
+        <Search size={18} className="text-muted-foreground" />
+        <Input
+          className="w-auto "
+          value={searchQuery}
+          placeholder="Question search"
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+          }}
+        />
+      </div>
+      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {questions.map((question, index) => (
+          <QuestionCard question={question} key={index} />
+        ))}
+      </div>
     </div>
   );
 }

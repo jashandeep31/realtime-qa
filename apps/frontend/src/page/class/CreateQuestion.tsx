@@ -20,7 +20,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 import { Label } from "@repo/ui/label";
 import { Checkbox } from "@repo/ui/checkbox";
-import CKEditorComponent from "../../components/CKEditor";
+import CKEditorComponent from "../../components/CKEditorComponent";
 
 const formSchema = z.object({
   title: z.string().min(2).max(50),
@@ -29,7 +29,7 @@ const formSchema = z.object({
 
 const CreateQuestion = () => {
   const navigate = useNavigate();
-  const { socketHandler, questions, resetClass } = useSocket();
+  const { socketHandler, questions, resetClass, setSearchQuery } = useSocket();
   const { slug } = useParams<{ slug: string }>();
   const [description, setDescription] = useState("");
   const [isNotionLink, setIsNotionLink] = useState<boolean>(false);
@@ -57,6 +57,14 @@ const CreateQuestion = () => {
       resetClass(slug);
     }
   }, [socketHandler, slug, resetClass]);
+
+  const { watch } = form;
+
+  const title = watch("title");
+
+  useEffect(() => {
+    setSearchQuery(title || "");
+  }, [title, setSearchQuery]);
 
   return (
     <div className="container md:mt-12 mt-6">
@@ -155,9 +163,11 @@ const CreateQuestion = () => {
           <h3 className="text-muted-foreground font-medium text-sm mb-3">
             Similar Questions
           </h3>
-          {questions.map((question) => (
-            <QuestionCard question={question} />
-          ))}
+          <div className="space-y-3">
+            {questions.map((question) => (
+              <QuestionCard question={question} />
+            ))}
+          </div>
         </div>
       </section>
     </div>
